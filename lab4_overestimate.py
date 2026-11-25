@@ -1,21 +1,8 @@
-"""
-Lab 04 - Task 3: what an overestimating heuristic does to A*.
-
-1. Raises the heuristic of one node on the optimal route (Admin Block, D) far
-   above its true remaining cost and shows the suboptimal answer, with the
-   queue trace that explains it.
-2. Sweeps the inflated value to find where optimality is lost.
-3. Repeats the experiment on a node OFF the optimal route, where the same kind
-   of overestimate is harmless, to show that one lucky run proves nothing.
-4. Finds, for every node, the smallest overestimate that makes the route worse.
-5. Runs a verification suite against a brute-force oracle.
-"""
-
 from lab4_astar import (GRAPH, H, START, GOAL, astar, path_cost, all_path_costs,
                         admissibility, consistency, true_costs_to_goal)
 
 BAR = "=" * 78
-BAD_D = 12          # inflated h(D); the true remaining cost h*(D) is 4
+BAD_D = 12          
 
 
 def arrow(path):
@@ -74,14 +61,14 @@ def sweep():
             cost = path_cost(GRAPH, res.path)
             verdict = "optimal" if cost == best_cost else "SUBOPTIMAL"
             state = (arrow(res.path), cost)
-            if state != last:                         # print only when result changes
+            if state != last:                         
                 print(f"{value:<8}{arrow(res.path):<12}{cost:>5}  {verdict}")
                 last = state
         print("(rows are shown only where the returned route changes)")
 
 
 def per_node():
-    """For each node: how much must h exceed h* before the route gets worse?"""
+    
     best_path, best_cost = optimum()
     star = true_costs_to_goal(GRAPH, GOAL)
     print("\n" + BAR)
