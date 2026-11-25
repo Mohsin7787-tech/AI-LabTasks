@@ -1,7 +1,3 @@
-
-#Lab 01 - Paradigm comparison: symbolic rules vs a probability threshold.
-
-
 import csv
 from lab1_rules import Applicant, evaluate
 
