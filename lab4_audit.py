@@ -1,11 +1,3 @@
-"""
-Lab 04 - Task 1: heuristic audit and the first three A* expansions.
-
-Part A checks the supplied heuristic against the two properties that make A*
-trustworthy: admissibility and consistency. Part B prints the arithmetic of
-the first three expansions so it can be compared with a hand calculation.
-"""
-
 from lab4_astar import (GRAPH, H, START, GOAL, NAMES, astar, admissibility,
                         consistency, all_path_costs)
 
