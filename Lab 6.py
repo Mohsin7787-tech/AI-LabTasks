@@ -27,7 +27,7 @@ STRATEGIES = ["0overlap", "10overlap", "sentence"]
 BACKENDS = ["tfidf", "embedding"]
 PREVIEW_CHARS = 120
 
-# Logging: mirror everything printed to run_output.txt
+
 
 class TeeStream:
     """File-like object that writes to several streams at once."""
@@ -46,7 +46,7 @@ class TeeStream:
 
 
 class RunLog:
-    """Context manager: stdout -> console + run_output.txt for the duration of the run."""
+    
 
     def __init__(self, path="run_output.txt"):
         self.path = path
@@ -65,7 +65,7 @@ class RunLog:
 
 
 
-# Synthetic data (handbook documents, labeled evidence, queries, FAQ)
+
  
 DOCS = {
     "late": (
@@ -245,10 +245,10 @@ def show(value):
 
 
 
-# Chunking (Task 2)
+
 
 def windows(text, size=WORD_BUDGET, overlap=10, offset=0):
-    """Fixed word windows -> list of (start_char, end_char). `offset` shifts the character positions."""
+    
     if size <= 0 or overlap < 0 or overlap >= size:
         raise ValueError("Require size > 0 and 0 <= overlap < size")
     spans = [m.span() for m in re.finditer(r"\S+", text)]
@@ -267,7 +267,7 @@ def windows(text, size=WORD_BUDGET, overlap=10, offset=0):
 
 
 def split_sentences(text):
-    """Return [(start, end, word_count)] for each sentence; a boundary is . ! or ? plus whitespace."""
+    
     pieces, begin = [], 0
     for m in re.finditer(r"[.!?]\s+", text):
         pieces.append((begin, m.end()))
@@ -283,8 +283,6 @@ def split_sentences(text):
 
 
 def sentence_chunks(text, size=WORD_BUDGET):
-    """Pack whole sentences into chunks of at most `size` words.
-    A sentence that is longer than the budget is cut with windows() (no overlap) as a fallback."""
     if size <= 0:
         raise ValueError("size must be positive")
 
@@ -315,7 +313,6 @@ def sentence_chunks(text, size=WORD_BUDGET):
 
 
 def make_chunks(docs, strategy):
-    """Turn {name: text} into chunk records {id, doc, start, end, text} for one strategy."""
     splitters = {
         "0overlap": lambda t: windows(t, size=WORD_BUDGET, overlap=0),
         "10overlap": lambda t: windows(t, size=WORD_BUDGET, overlap=10),
@@ -331,7 +328,6 @@ def make_chunks(docs, strategy):
 
 
 def chunk_stats(records, docs):
-    """Print chunk count, min/max/avg words, duplicated words and rule+exception coverage."""
     if not records:
         print("  No chunks.")
         return
@@ -350,10 +346,7 @@ def chunk_stats(records, docs):
         print("   ", item["label"], "->", intact)
 
 
-
-# Retrieval: TF-IDF or sentence embeddings behind one search() method
 class Retriever:
-    """Rank records for a query with either TF-IDF or MiniLM embeddings (cosine similarity)."""
 
     def __init__(self, records, backend="tfidf", model=None):
         self.records = records
@@ -389,7 +382,7 @@ class Retriever:
         return [(self.records[i], float(scores[i])) for i in order]
 
 
-# FAQ chatbot (Task 1)
+
 
 def build_faq_bot(backend="tfidf"):
     records = [dict(item, text=item["question"] + " " + item["answer"]) for item in FAQ]
@@ -431,8 +424,6 @@ def run_faq_chatbot_interactive():
         print("Bot:", faq_reply(engine, query))
 
 
-
-# Evaluation helpers (Task 3)
 
 def is_evidence_hit(record, query):
     """A hit needs the labeled document AND the full evidence string inside the chunk."""
@@ -487,7 +478,7 @@ def split_metrics(matrix, records, queries, split):
     return sum(hits) / len(hits), sum(reciprocal) / len(reciprocal)
 
 
-# Task 1: tokenization + FAQ demo
+
 def run_task1(model):
     print("=" * 60)
     print("TASK 1: Tokenization Comparison")
@@ -506,7 +497,7 @@ def run_task1(model):
         by_regex = re.findall(r"\b\w+\b", text, flags=re.UNICODE)
         left = f"{by_space} n={len(by_space)}"
         middle = f"{by_regex} n={len(by_regex)}"
-        right = str(model.tokenizer.tokenize(text)) if n < 2 else "-"      # subwords for 2 English inputs
+        right = str(model.tokenizer.tokenize(text)) if n < 2 else "-"      
         print(f"{text if text else '(empty)':<22} {left:<40} {middle:<40} {right}")
 
     print("MARKER_TOKEN_TABLE_END")
@@ -534,7 +525,7 @@ def run_task1(model):
     print("")
 
 
-# Task 2: chunk tests, statistics, paraphrase retrieval
+
 def expect_value_error(label, **kwargs):
     try:
         windows("a b c d", **kwargs)
@@ -618,7 +609,7 @@ def run_task2(model):
     print("MARKER_PARAPHRASE_END")
     print("")
 
-# Task 3: evaluation + document chatbot demo
+
 def print_top3(strategy, backend, matrix, records, queries, logs, failures):
     """Print the top-3 chunks for every query, append to the CSV log and record misses."""
     print("")
@@ -808,7 +799,7 @@ def run_chatbot(model, strategy, backend):
         print("")
 
 
-# Main
+
 
 def main():
     print("Lab 6 run")
