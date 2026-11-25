@@ -1,26 +1,8 @@
-"""
-Lab 04 - A* search on a campus walking graph.
-
-One priority-queue engine serves every experiment. The heuristic is a plain
-dictionary, so UCS is simply A* with h(n) = 0 and a "what-if" heuristic is
-just a modified copy of the dictionary.
-
-Conventions
-  * f(n) = g(n) + h(n); the queue pops the smallest f.
-  * Ties on f are broken by the smaller h (closer to the goal), then by
-    insertion order, so every run is reproducible.
-  * A node is COUNTED as expanded when its outgoing edges are examined. Popping
-    the goal is logged but not counted as an expansion.
-  * Outdated queue entries (a cheaper route to the node was found later) are
-    skipped when popped.
-"""
-
 import heapq
 from dataclasses import dataclass, field
 
 START, GOAL = "S", "G"
 
-# Directed walking links with travel time in minutes (synthetic lab values).
 NAMES = {"S": "Main Gate", "A": "Library", "B": "Cafeteria", "C": "Hostel",
          "D": "Admin Block", "E": "Lab Block", "F": "Sports Complex",
          "G": "Auditorium"}
@@ -35,7 +17,6 @@ EDGES = [
     ("F", "G", 6),
 ]
 
-# Estimated remaining minutes to the Auditorium (the supplied heuristic).
 H = {"S": 8, "A": 6, "B": 5, "C": 6, "D": 3, "E": 2, "F": 4, "G": 0}
 
 
@@ -55,9 +36,9 @@ class AStarResult:
     status: str
     path: list = None
     cost: float = None
-    expansions: list = field(default_factory=list)   # counted expansions, in order
-    pops: list = field(default_factory=list)         # every pop incl. the goal
-    rows: list = field(default_factory=list)         # trace rows
+    expansions: list = field(default_factory=list)   
+    pops: list = field(default_factory=list)         
+    rows: list = field(default_factory=list)       
 
     @property
     def expanded_count(self):
@@ -66,13 +47,13 @@ class AStarResult:
 
 def astar(graph, h, start, goal):
     best_g = {start: 0}
-    heap = [(h[start], h[start], 0, 0, start, [start])]    # f, h, order, g, node, path
+    heap = [(h[start], h[start], 0, 0, start, [start])]    
     order = 1
     res = AStarResult("FAILURE")
     while heap:
         f, hn, _, g, node, path = heapq.heappop(heap)
         if g > best_g.get(node, float("inf")):
-            continue                                      # outdated entry
+            continue                                      
         res.pops.append(node)
         if node == goal:
             res.status, res.path, res.cost = "FOUND", path, g
@@ -94,8 +75,6 @@ def _snapshot(heap, best_g):
     live = [e for e in heap if e[3] == best_g.get(e[4])]
     return [(e[0], e[3], e[4]) for e in sorted(live)]
 
-
-# ----------------------------------------------------------------- audits
 def true_costs_to_goal(graph, goal):
     """h*(n): exact cheapest cost from every node to the goal, computed by
     running Dijkstra on the reversed graph."""
