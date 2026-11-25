@@ -1,10 +1,4 @@
-"""
-Lab 04 - Task 2: A* versus uniform-cost search on the same engine.
 
-UCS is run by giving every node h = 0, so the only thing that changes between
-rows is the heuristic. Two extra rows bracket the supplied heuristic:
-a deliberately weaker one (half the supplied values) and the perfect one (h*).
-"""
 
 from lab4_astar import (GRAPH, H, START, GOAL, astar, path_cost,
                         true_costs_to_goal)
